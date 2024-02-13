@@ -29,11 +29,24 @@ export default function ColumnCard({
   const setTasksColumn = (tasks: TasksType[], id: string | number) => {
     const taskIds = tasks.map((task) => task.id);
 
+    // setTasks((prevTasks: TasksType[]) => {
+    //   const newTasks = [...prevTasks];
+    //   newTasks.forEach((task) => {
+    //     if (taskIds.includes(task.id)) {
+    //       task.columnId = id;
+    //       console.log(`Task Name: ${task.name} moved to ${column.name}`);
+    //     }
+    //   });
+    //   return newTasks;
+    // });
+
     setTasks((prevTasks: TasksType[]) => {
       const newTasks = [...prevTasks];
-      newTasks.forEach((task) => {
-        if (taskIds.includes(task.id)) {
-          task.columnId = id;
+      tasks.forEach((task: TasksType, index: number) => {
+        const foundTask = newTasks.find((t) => t.id === task.id);
+        if (foundTask) {
+          foundTask.columnId = id;
+          foundTask.index = index;
           console.log(`Task Name: ${task.name} moved to ${column.name}`);
         }
       });
@@ -53,6 +66,8 @@ export default function ColumnCard({
               list={sortedTasks}
               setList={(sortedTasks) => setTasksColumn(sortedTasks, column.id)}
               group={"cards"}
+              className="min-h-12"
+              ghostClass="opacity-20"
             >
               {sortedTasks.map((task) => (
                 <div key={task.id} className="mt-3">

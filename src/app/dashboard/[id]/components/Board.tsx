@@ -1,8 +1,17 @@
 "use client";
 import NewColumn from "@/components/forms/NewColumn";
-import { Container, SimpleGrid } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Spacer,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import ColumnCard from "./ColumnCard";
+import { useBoardContext } from "../../../../../context/boardTitle";
+import { IoSettingsSharp } from "react-icons/io5";
 
 const dummyColumns = [
   { name: "To Do", id: "col1", index: 0 },
@@ -45,11 +54,27 @@ export type TasksType = {
 };
 
 export default function Board() {
+  const { id, name } = useBoardContext();
   const [tasks, setTasks] = useState<TasksType[]>(dummyTasks);
   const [columns, setColumns] = useState(dummyColumns);
   return (
     <>
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={10}>
+      <Flex>
+        <Heading fontSize={"2xl"}>{name}</Heading>
+        <Spacer />
+        <Button
+          colorScheme="blue"
+          color={"white"}
+          rightIcon={<IoSettingsSharp />}
+        >
+          Board Settings
+        </Button>
+      </Flex>
+      <SimpleGrid
+        columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+        spacing={10}
+        pt={8}
+      >
         {dummyColumns.map((column) => (
           <div key={column.id}>
             <ColumnCard

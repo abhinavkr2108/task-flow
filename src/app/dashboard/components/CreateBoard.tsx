@@ -2,6 +2,7 @@ import { Button, Container, Heading, SimpleGrid } from "@chakra-ui/react";
 import React from "react";
 import BoardCard from "./BoardCard";
 import { FaArrowRightLong } from "react-icons/fa6";
+import CreateBoardBtn from "./CreateBoardBtn";
 
 export default function CreateBoard() {
   const boardItems = [
@@ -34,14 +35,7 @@ export default function CreateBoard() {
           ))}
         </SimpleGrid>
 
-        <Button
-          rightIcon={<FaArrowRightLong />}
-          colorScheme="blue"
-          color={"white"}
-          mt={5}
-        >
-          Create New Board
-        </Button>
+        <CreateBoardBtn />
       </>
     </div>
   );
