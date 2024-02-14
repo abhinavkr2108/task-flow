@@ -7,8 +7,7 @@ export async function createBoardAction(
   name: string
 ): Promise<false | RoomInfo> {
   const liveblocksClient = new Liveblocks({
-    secret:
-      "sk_dev_bWhFzT5z0jb37_mzCcRk1X2SsEi1nWf48H0UyJ-S8MhqrG379Hxj_nM_U_PWz2jP",
+    secret: process.env.LIVE_BLOCKS_KEY || "",
   });
   const roomId = new Date().getTime().toString();
   const session = await getServerSession(authOptions);

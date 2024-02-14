@@ -1,34 +1,35 @@
 "use client";
-import { Card, Heading } from "@chakra-ui/react";
+import { Card, Heading, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useBoardContext } from "../../../../context/boardTitle";
+import { RoomInfo } from "@liveblocks/node";
 
 interface BoardCardProps {
-  board: {
-    id: number;
-    name: string;
-  };
+  room: RoomInfo;
 }
-export default function BoardCard({ board }: BoardCardProps) {
+export default function BoardCard({ room }: BoardCardProps) {
+  {
+    !room && <Spinner />;
+  }
   const { id, name, setId, setName } = useBoardContext();
   const router = useRouter();
 
   const navigateToBoardDetails = () => {
-    setId(board.id);
-    setName(board.name);
-    router.push(`/dashboard/${board.id}`);
+    setId(room.id);
+    setName(room.metadata.boardName as string);
+    router.push(`/dashboard/${room.id}`);
   };
   return (
     <Card
       w={"full"}
       h={150}
       cursor={"pointer"}
-      key={board.id}
+      key={room.id}
       onClick={navigateToBoardDetails}
     >
       <div className="flex h-full w-full justify-center items-center">
-        <Heading fontSize={"md"}>{board.name}</Heading>
+        <Heading fontSize={"md"}>{room.metadata.boardName}</Heading>
       </div>
     </Card>
   );

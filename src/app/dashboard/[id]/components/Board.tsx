@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import ColumnCard from "./ColumnCard";
 import { useBoardContext } from "../../../../../context/boardTitle";
 import { IoSettingsSharp } from "react-icons/io5";
+import { getUserEmail } from "@/lib/getUserEmail";
 
 const dummyColumns = [
   { name: "To Do", id: "col1", index: 0 },
@@ -57,9 +58,10 @@ export default function Board() {
   const { id, name } = useBoardContext();
   const [tasks, setTasks] = useState<TasksType[]>(dummyTasks);
   const [columns, setColumns] = useState(dummyColumns);
+
   return (
     <>
-      <Flex>
+      <Flex alignItems={"center"} py={4}>
         <Heading fontSize={"2xl"}>{name}</Heading>
         <Spacer />
         <Button
