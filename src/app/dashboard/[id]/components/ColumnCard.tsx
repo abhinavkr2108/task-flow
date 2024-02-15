@@ -8,51 +8,55 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
-import { TasksType } from "./Board";
+// import { TasksType } from "./Board";
 import { ReactSortable } from "react-sortablejs";
+import {
+  Task,
+  useMutation,
+  useStorage,
+} from "../../../../../liveblocks.config";
+import NewTaskCard from "@/components/forms/NewTaskCard";
 
 interface ColumnCardProps {
   column: {
     name: string;
-    id: number | string;
+    id: string;
   };
-  tasks: TasksType[];
-  //   setTasks: (tasks: TasksType[]) => void;
-  setTasks: React.Dispatch<React.SetStateAction<TasksType[]>>;
 }
-export default function ColumnCard({
-  column,
-  tasks,
-  setTasks,
-}: ColumnCardProps) {
-  const sortedTasks = tasks.sort((a, b) => a.index - b.index);
-  const setTasksColumn = (tasks: TasksType[], id: string | number) => {
-    const taskIds = tasks.map((task) => task.id);
+export default function ColumnCard({ column }: ColumnCardProps) {
+  const tasksCards = useStorage<Task[]>((root) => {
+    return root.tasks
+      .filter((task) => task.columnId === column.id)
+      .map((t) => ({ ...t }));
+  });
 
-    // setTasks((prevTasks: TasksType[]) => {
-    //   const newTasks = [...prevTasks];
-    //   newTasks.forEach((task) => {
-    //     if (taskIds.includes(task.id)) {
-    //       task.columnId = id;
-    //       console.log(`Task Name: ${task.name} moved to ${column.name}`);
-    //     }
-    //   });
-    //   return newTasks;
-    // });
+  const sortedTasks = tasksCards?.sort((a, b) => a.index - b.index);
+  if (!sortedTasks || sortedTasks === undefined) return;
 
-    setTasks((prevTasks: TasksType[]) => {
-      const newTasks = [...prevTasks];
-      tasks.forEach((task: TasksType, index: number) => {
-        const foundTask = newTasks.find((t) => t.id === task.id);
-        if (foundTask) {
-          foundTask.columnId = id;
-          foundTask.index = index;
-          console.log(`Task Name: ${task.name} moved to ${column.name}`);
-        }
+  const updateTasks = useMutation(({ storage }, index, updatedData) => {
+    const task = storage.get("tasks").get(index);
+    if (!task) return;
+    for (let key in updatedData) {
+      task?.set(key as keyof Task, updatedData[key]);
+    }
+  }, []);
+
+  const setTasksColumn = useMutation(
+    ({ storage }, sortedTasks: Task[], columnId) => {
+      console.log(sortedTasks, columnId);
+      const idsOfSortedTasks = sortedTasks.map((task: Task) =>
+        task.id.toString()
+      );
+      const allTasks = [...storage.get("tasks").map((t) => t.toObject())];
+      idsOfSortedTasks.forEach((id, index) => {
+        const taskStorageIndex = allTasks.findIndex(
+          (t) => t.id.toString() === id
+        );
+        updateTasks(taskStorageIndex, { columnId: columnId, index: index });
       });
-      return newTasks;
-    });
-  };
+    },
+    []
+  );
 
   return (
     <Card>
@@ -69,13 +73,14 @@ export default function ColumnCard({
               className="min-h-12"
               ghostClass="opacity-20"
             >
-              {sortedTasks.map((task) => (
+              {sortedTasks?.map((task) => (
                 <div key={task.id} className="mt-3">
                   <div className="border rounded-md p-4">{task.name}</div>
                 </div>
               ))}
             </ReactSortable>
           </ListItem>
+          <NewTaskCard columnId={column.id} />
         </List>
       </CardBody>
     </Card>

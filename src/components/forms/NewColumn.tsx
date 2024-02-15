@@ -1,6 +1,9 @@
 "use client";
 import { Button, Input } from "@chakra-ui/react";
 import React from "react";
+import { useMutation } from "../../../liveblocks.config";
+import uniqid from "uniqid";
+import { LiveObject } from "@liveblocks/client";
 
 export default function NewColumn() {
   const [name, setName] = React.useState<string>("");
@@ -9,9 +12,24 @@ export default function NewColumn() {
     console.log(name);
   }, [name]);
 
+  const addColumn = useMutation(({ storage }, columnName: string) => {
+    const columns = storage.get("columns");
+    return columns.push(
+      new LiveObject({
+        id: uniqid(),
+        name: columnName,
+        index: 9999,
+      })
+    );
+  }, []);
+
   const handleAddNewColumn = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert(name);
+    if (!name) {
+      return;
+    }
+    addColumn(name);
+    setName("");
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);

@@ -7,12 +7,18 @@ import {
   Heading,
   SimpleGrid,
   Spacer,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import ColumnCard from "./ColumnCard";
 import { useBoardContext } from "../../../../../context/boardTitle";
 import { IoSettingsSharp } from "react-icons/io5";
 import { getUserEmail } from "@/lib/getUserEmail";
+import { RoomProvider } from "../../../../../liveblocks.config";
+import { LiveList } from "@liveblocks/client";
+import { ClientSideSuspense } from "@liveblocks/react";
+import Columns from "./Columns";
+import { RoomInfo } from "@liveblocks/node";
 
 const dummyColumns = [
   { name: "To Do", id: "col1", index: 0 },
@@ -51,43 +57,41 @@ export type TasksType = {
   id: string;
   name: string;
   index: number;
-  columnId: number | string;
+  columnId: string;
 };
 
-export default function Board() {
-  const { id, name } = useBoardContext();
+interface BoardProps {
+  boardId: string;
+  boardInfo: RoomInfo;
+}
+
+export default function Board({ boardId, boardInfo }: BoardProps) {
   const [tasks, setTasks] = useState<TasksType[]>(dummyTasks);
   const [columns, setColumns] = useState(dummyColumns);
+  // const boardId = id.toString();
+  // localStorage.setItem("boardId", boardId);
 
   return (
     <>
-      <Flex alignItems={"center"} py={4}>
-        <Heading fontSize={"2xl"}>{name}</Heading>
-        <Spacer />
-        <Button
-          colorScheme="blue"
-          color={"white"}
-          rightIcon={<IoSettingsSharp />}
-        >
-          Board Settings
-        </Button>
-      </Flex>
-      <SimpleGrid
-        columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-        spacing={10}
-        pt={8}
+      <RoomProvider
+        id={boardId}
+        initialPresence={{}}
+        initialStorage={{ columns: new LiveList(), tasks: new LiveList() }}
       >
-        {dummyColumns.map((column) => (
-          <div key={column.id}>
-            <ColumnCard
-              column={column}
-              tasks={dummyTasks.filter((task) => task.columnId === column.id)}
-              setTasks={setTasks}
-            />
-          </div>
-        ))}
-        <NewColumn />
-      </SimpleGrid>
+        <ClientSideSuspense
+          fallback={
+            <div className="text-center h-screen">
+              <Spinner />
+            </div>
+          }
+        >
+          {() => (
+            <>
+              <Columns boardInfo={boardInfo} />
+            </>
+          )}
+        </ClientSideSuspense>
+      </RoomProvider>
     </>
   );
 }
