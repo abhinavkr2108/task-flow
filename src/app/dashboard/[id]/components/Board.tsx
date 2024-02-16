@@ -87,7 +87,7 @@ export default function Board({ boardId, boardInfo }: BoardProps) {
         >
           {() => (
             <>
-              <Columns boardInfo={boardInfo} />
+              <Columns boardInfo={boardInfo} boardId={boardId} />
             </>
           )}
         </ClientSideSuspense>

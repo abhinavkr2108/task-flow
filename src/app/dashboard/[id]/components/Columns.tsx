@@ -8,11 +8,13 @@ import { Column, useStorage } from "../../../../../liveblocks.config";
 import { RoomInfo } from "@liveblocks/node";
 import { ReactSortable } from "react-sortablejs";
 import Link from "next/link";
+import BoardInfo from "./BoardInfo";
 
 interface ColumnsProps {
   boardInfo: RoomInfo;
+  boardId: string;
 }
-export default function Columns({ boardInfo }: ColumnsProps) {
+export default function Columns({ boardInfo, boardId }: ColumnsProps) {
   const boardName = boardInfo.metadata.boardName;
 
   const columns = useStorage((root) => root.columns.map((c) => ({ ...c })));
@@ -20,19 +22,11 @@ export default function Columns({ boardInfo }: ColumnsProps) {
 
   return (
     <div>
-      <Flex alignItems={"center"} py={4}>
-        <Heading fontSize={"2xl"}>{boardName}</Heading>
-        <Spacer />
-        <Link href={`/dashboard/${boardInfo.id}/settings`}>
-          <Button
-            colorScheme="blue"
-            color={"white"}
-            rightIcon={<IoSettingsSharp />}
-          >
-            Board Settings
-          </Button>
-        </Link>
-      </Flex>
+      <BoardInfo
+        boardInfo={boardInfo}
+        boardName={boardName}
+        boardId={boardId}
+      />
       <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={10} pt={5}>
         <>
           {columns.length > 0 &&

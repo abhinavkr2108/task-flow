@@ -1,13 +1,20 @@
 "use client";
 import {
+  Button,
   Card,
   CardBody,
   CardHeader,
+  Flex,
   Heading,
+  IconButton,
+  Input,
+  InputGroup,
+  InputRightAddon,
   List,
   ListItem,
+  Spacer,
 } from "@chakra-ui/react";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 // import { TasksType } from "./Board";
 import { ReactSortable } from "react-sortablejs";
 import {
@@ -16,6 +23,9 @@ import {
   useStorage,
 } from "../../../../../liveblocks.config";
 import NewTaskCard from "@/components/forms/NewTaskCard";
+import { liveblocksClient } from "@/lib/liveBlocksClient";
+import { FaCommentDots, FaTrash } from "react-icons/fa6";
+import { BsThreeDots } from "react-icons/bs";
 
 interface ColumnCardProps {
   column: {
@@ -24,6 +34,9 @@ interface ColumnCardProps {
   };
 }
 export default function ColumnCard({ column }: ColumnCardProps) {
+  const [renameMode, setRenameMode] = useState<boolean>(false);
+  const [renameValue, setRenameValue] = useState<string>("");
+
   const tasksCards = useStorage<Task[]>((root) => {
     return root.tasks
       .filter((task) => task.columnId === column.id)
@@ -61,10 +74,58 @@ export default function ColumnCard({ column }: ColumnCardProps) {
     []
   );
 
+  const updateColumn = useMutation(({ storage }, id, updatedName) => {
+    const getCols = storage.get("columns");
+    getCols.find((col) => col.toObject().id === id)?.set("name", updatedName);
+  }, []);
+
+  const deleteColumn = useMutation(({ storage }, id) => {
+    const getCols = storage.get("columns");
+    const colsIndex = getCols.findIndex((col) => col.toObject().id === id);
+    getCols.delete(colsIndex);
+  }, []);
+
+  const handleNameSubmit = async () => {
+    if (renameValue) {
+      updateColumn(column.id, renameValue);
+    }
+    // window.location.reload();
+    setRenameMode(!renameMode);
+  };
+
+  const handleDeleteColumn = async () => {
+    await deleteColumn(column.id);
+    setRenameMode(!renameMode);
+  };
+
   return (
     <Card>
       <CardHeader>
-        <Heading fontSize={"md"}>{column.name}</Heading>
+        {!renameMode && (
+          <>
+            <Heading fontSize={"md"} onClick={() => setRenameMode(!renameMode)}>
+              {column.name}
+            </Heading>
+          </>
+        )}
+        {renameMode && (
+          <form action="">
+            <form onSubmit={handleNameSubmit}>
+              <InputGroup>
+                <Input
+                  defaultValue={column.name}
+                  onChange={(e) => setRenameValue(e.target.value)}
+                />
+                <InputRightAddon
+                  className="cursor-pointer"
+                  onClick={handleNameSubmit}
+                >
+                  Rename
+                </InputRightAddon>
+              </InputGroup>
+            </form>
+          </form>
+        )}
       </CardHeader>
       <CardBody>
         <List spacing={3}>
@@ -84,6 +145,14 @@ export default function ColumnCard({ column }: ColumnCardProps) {
             </ReactSortable>
           </ListItem>
           <NewTaskCard columnId={column.id} />
+          <Button
+            leftIcon={<FaTrash />}
+            onClick={handleDeleteColumn}
+            w={"full"}
+            colorScheme="red"
+          >
+            Delete Column
+          </Button>
         </List>
       </CardBody>
     </Card>
