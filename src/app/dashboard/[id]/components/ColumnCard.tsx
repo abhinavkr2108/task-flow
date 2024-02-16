@@ -35,6 +35,9 @@ export default function ColumnCard({ column }: ColumnCardProps) {
 
   const updateTasks = useMutation(({ storage }, index, updatedData) => {
     const task = storage.get("tasks").get(index);
+    console.log("TASK WITH INDEX:");
+    console.log(task);
+    console.log(index);
     if (!task) return;
     for (let key in updatedData) {
       task?.set(key as keyof Task, updatedData[key]);

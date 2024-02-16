@@ -4,17 +4,18 @@ import React from "react";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useBoardContext } from "../../../../../context/boardTitle";
 import ColumnCard from "./ColumnCard";
-import { useStorage } from "../../../../../liveblocks.config";
+import { Column, useStorage } from "../../../../../liveblocks.config";
 import { RoomInfo } from "@liveblocks/node";
+import { ReactSortable } from "react-sortablejs";
+import Link from "next/link";
 
 interface ColumnsProps {
   boardInfo: RoomInfo;
 }
 export default function Columns({ boardInfo }: ColumnsProps) {
-  //   const { id, name } = useBoardContext();
   const boardName = boardInfo.metadata.boardName;
 
-  const columns = useStorage((root) => root.columns);
+  const columns = useStorage((root) => root.columns.map((c) => ({ ...c })));
   if (!columns) return;
 
   return (
@@ -22,26 +23,27 @@ export default function Columns({ boardInfo }: ColumnsProps) {
       <Flex alignItems={"center"} py={4}>
         <Heading fontSize={"2xl"}>{boardName}</Heading>
         <Spacer />
-        <Button
-          colorScheme="blue"
-          color={"white"}
-          rightIcon={<IoSettingsSharp />}
-        >
-          Board Settings
-        </Button>
+        <Link href={`/dashboard/${boardInfo.id}/settings`}>
+          <Button
+            colorScheme="blue"
+            color={"white"}
+            rightIcon={<IoSettingsSharp />}
+          >
+            Board Settings
+          </Button>
+        </Link>
       </Flex>
-      <SimpleGrid
-        columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-        spacing={10}
-        pt={8}
-      >
-        {columns.length > 0 &&
-          columns.map((column) => (
-            <div key={column.id}>
-              <ColumnCard column={column} /*tasks={[]} setTasks={() => {}}*/ />
-            </div>
-          ))}
-        <NewColumn />
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={10} pt={5}>
+        <>
+          {columns.length > 0 &&
+            columns.map((column) => (
+              <ColumnCard
+                key={column.id}
+                column={column} /*tasks={[]} setTasks={() => {}}*/
+              />
+            ))}
+          <NewColumn />
+        </>
       </SimpleGrid>
     </div>
   );
