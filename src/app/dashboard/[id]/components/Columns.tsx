@@ -23,7 +23,7 @@ export default function Columns({ boardInfo, boardId }: ColumnsProps) {
   const updateMyPresence = useUpdateMyPresence();
   useEffect(() => {
     updateMyPresence({ boardId: boardId });
-  }, []);
+  }, [boardId]);
 
   const columns = useStorage((root) => root.columns.map((c) => ({ ...c })));
   if (!columns) return;

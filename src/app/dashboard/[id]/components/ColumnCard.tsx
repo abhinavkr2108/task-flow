@@ -46,7 +46,7 @@ export default function ColumnCard({ column }: ColumnCardProps) {
     updateMyPresence({
       columnId: column.id,
     });
-  }, []);
+  }, [column.id]);
 
   const tasksCards = useStorage<Task[]>((root) => {
     return root.tasks
@@ -55,7 +55,6 @@ export default function ColumnCard({ column }: ColumnCardProps) {
   });
 
   const sortedTasks = tasksCards?.sort((a, b) => a.index - b.index);
-  if (!sortedTasks || sortedTasks === undefined) return;
 
   const updateTasks = useMutation(({ storage }, index, updatedData) => {
     const task = storage.get("tasks").get(index);
