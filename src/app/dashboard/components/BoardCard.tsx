@@ -1,9 +1,10 @@
 "use client";
 import { Card, Heading, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import React from "react";
-import { useBoardContext } from "../../../../context/boardTitle";
+import React, { useEffect } from "react";
 import { RoomInfo } from "@liveblocks/node";
+import { useUpdateMyPresence } from "../../../../liveblocks.config";
+import AvatarPresence from "@/components/AvatarPresence";
 
 interface BoardCardProps {
   room: RoomInfo;
@@ -12,12 +13,20 @@ export default function BoardCard({ room }: BoardCardProps) {
   {
     !room && <Spinner />;
   }
-  const { id, name, setId, setName } = useBoardContext();
+
   const router = useRouter();
 
+  const updateMyPresence = useUpdateMyPresence();
+
+  useEffect(() => {
+    updateMyPresence({ boardId: room.id });
+  }, [room.id]);
+
+  console.log("PRESENCE:");
+  // console.log(updateMyPresence);
+  console.log(room.id);
+
   const navigateToBoardDetails = () => {
-    setId(room.id);
-    setName(room.metadata.boardName as string);
     router.push(`/dashboard/${room.id}`);
   };
   return (
@@ -28,8 +37,9 @@ export default function BoardCard({ room }: BoardCardProps) {
       key={room.id}
       onClick={navigateToBoardDetails}
     >
-      <div className="flex h-full w-full justify-center items-center">
+      <div className="relative flex h-full w-full justify-center items-center">
         <Heading fontSize={"md"}>{room.metadata.boardName}</Heading>
+        <AvatarPresence presenceKey="boardId" presenceValue={room.id} />
       </div>
     </Card>
   );

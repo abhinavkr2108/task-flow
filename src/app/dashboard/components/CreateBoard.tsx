@@ -7,6 +7,7 @@ import CreateBoardBtn from "./CreateBoardBtn";
 import { RoomInfo } from "@liveblocks/node";
 import { getUserEmail } from "@/lib/getUserEmail";
 import { liveblocksClient } from "@/lib/liveBlocksClient";
+import BoardCardProvider from "./BoardCardProvider";
 
 export default async function CreateBoard() {
   const email = await getUserEmail();
@@ -26,21 +27,14 @@ export default async function CreateBoard() {
     },
   ];
   console.log(rooms);
+
   return (
     <div className="pt-5">
       <>
         <Heading fontSize={"2xl"}>Your Boards:</Heading>
-        <SimpleGrid
-          columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-          spacing={10}
-          pt={5}
-        >
-          {rooms.map((room) => (
-            <div key={room.id}>
-              <BoardCard room={room} />
-            </div>
-          ))}
-        </SimpleGrid>
+        <>
+          <BoardCardProvider rooms={rooms} />
+        </>
 
         <CreateBoardBtn />
       </>

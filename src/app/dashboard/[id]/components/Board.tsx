@@ -9,12 +9,15 @@ import {
   Spacer,
   Spinner,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import ColumnCard from "./ColumnCard";
 // import { useBoardContext } from "../../../../../context/boardTitle";
 // import { IoSettingsSharp } from "react-icons/io5";
 // import { getUserEmail } from "@/lib/getUserEmail";
-import { RoomProvider } from "../../../../../liveblocks.config";
+import {
+  RoomProvider,
+  useUpdateMyPresence,
+} from "../../../../../liveblocks.config";
 import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import Columns from "./Columns";
@@ -75,7 +78,7 @@ export default function Board({ boardId, boardInfo }: BoardProps) {
     <>
       <RoomProvider
         id={boardId}
-        initialPresence={{}}
+        initialPresence={{ boardId: null, columnId: null }}
         initialStorage={{ columns: new LiveList(), tasks: new LiveList() }}
       >
         <ClientSideSuspense

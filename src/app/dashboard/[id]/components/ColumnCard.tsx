@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
   Flex,
   Heading,
@@ -14,18 +15,20 @@ import {
   ListItem,
   Spacer,
 } from "@chakra-ui/react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 // import { TasksType } from "./Board";
 import { ReactSortable } from "react-sortablejs";
 import {
   Task,
   useMutation,
   useStorage,
+  useUpdateMyPresence,
 } from "../../../../../liveblocks.config";
 import NewTaskCard from "@/components/forms/NewTaskCard";
 import { liveblocksClient } from "@/lib/liveBlocksClient";
 import { FaCommentDots, FaTrash } from "react-icons/fa6";
 import { BsThreeDots } from "react-icons/bs";
+import AvatarPresence from "@/components/AvatarPresence";
 
 interface ColumnCardProps {
   column: {
@@ -36,6 +39,14 @@ interface ColumnCardProps {
 export default function ColumnCard({ column }: ColumnCardProps) {
   const [renameMode, setRenameMode] = useState<boolean>(false);
   const [renameValue, setRenameValue] = useState<string>("");
+
+  const updateMyPresence = useUpdateMyPresence();
+
+  useEffect(() => {
+    updateMyPresence({
+      columnId: column.id,
+    });
+  }, []);
 
   const tasksCards = useStorage<Task[]>((root) => {
     return root.tasks
@@ -155,6 +166,9 @@ export default function ColumnCard({ column }: ColumnCardProps) {
           </Button>
         </List>
       </CardBody>
+      <CardFooter>
+        <AvatarPresence presenceKey="columnId" presenceValue={column.id} />
+      </CardFooter>
     </Card>
   );
 }
