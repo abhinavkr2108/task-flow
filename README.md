@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Task-Flow
 
-## Getting Started
+This project entails the development of a robust task management application inspired by Trello, enhanced with real-time collaboration features and intuitive drag-and-drop functionality. The application is designed to streamline task organization, foster collaboration among team members, and facilitate seamless project management experiences
 
-First, run the development server:
+## Features
+
+- Real-Time Collaboration: Users can collaborate in real-time, enabling simultaneous updates and changes across all connected devices. This feature promotes enhanced communication and productivity among team members.
+- Intuitive Drag-and-Drop Interface: The application offers a user-friendly interface with drag-and-drop functionality, allowing users to effortlessly organize tasks, assign priorities, and manage project workflows.
+- Customizable Boards and Cards: Users have the flexibility to create custom boards and cards, tailored to their specific project requirements. This feature enables efficient organization and categorization of tasks, enhancing project clarity and visibility.
+- User Authentication and Permissions: The application includes robust user authentication mechanisms and role-based permissions, ensuring secure access control and data privacy.
+- Responsive Design: The application is designed to be responsive across various devices and screen sizes, ensuring optimal user experience and accessibility.
+
+## Tech Stack
+
+**Frontend**: The frontend of the application is built using modern web technologies such as Next.js and Typescript, ensuring a dynamic and interactive user interface.
+
+**Authentication and Authorization:** Next Auth JSON Web Tokens (JWT) are utilized for secure user authentication and authorization, ensuring robust access control mechanisms.
+
+**Database:** MongoDB is chosen as the database solution for its flexibility, scalability, and compatibility with the Node.js environment.
+
+**Real Time Collaboration**: For Real time collaoration between users, Liveblocks is used
+
+## Run Locally
+
+Clone the project
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  git clone https://github.com/abhinavkr2108/task-flow.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Go to the project directory
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+  cd task-flow
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Install dependencies
 
-## Learn More
+```bash
+  npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+Start the server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+  npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+To run this project, you will need to add the following environment variables to your .env file in the root directory
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`GOOGLE_CLIENT_ID`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+`GOOGLE_CLIENT_SECRET`
+
+`MONGODB_URI`
+
+`NEXTAUTH_URL`="http://localhost:3000"
+
+`NEXTAUTH_SECRET`="any-random-string"
+
+`LIVE_BLOCKS_KEY`
+
+## Screenshots
+
+![App Screenshot](https://imgtr.ee/images/2024/02/17/386aec8ac1bd74de068823909fb8e8be.png)
+![App Screenshot](https://imgtr.ee/images/2024/02/17/b2db5e7578711ef47a8d821242d35be1.png)
+![App Screenshot](https://imgtr.ee/images/2024/02/17/58ee5209c9430f057c23fabecd7a3525.png)
