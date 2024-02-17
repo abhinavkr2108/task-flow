@@ -22,7 +22,9 @@ export default function AvatarPresence({
   return (
     <div>
       {others.map((user) => (
-        <Avatar src={user.info?.picture?.toString() || ""} size={"sm"} />
+        <div key={user.id}>
+          <Avatar src={user.info?.picture?.toString() || ""} size={"sm"} />
+        </div>
       ))}
     </div>
   );
